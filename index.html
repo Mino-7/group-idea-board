@@ -497,10 +497,10 @@
                 <h2 style="color: var(--ucsc-maroon); margin-bottom: 1rem;">Study Timer</h2>
                 <div class="tool-placeholder">
                     <p>Focus with Pomodoro technique.</p>
-                    <div class="timer-display">25:00</div>
+                    <div class="timer-display" id="timer-display">25:00</div>
                     <div class="button-group">
-                        <button class="btn-primary">Start</button>
-                        <button class="btn-secondary">Reset</button>
+                        <button class="btn-primary" id="start-btn">Start</button>
+                        <button class="btn-secondary" id="reset-btn">Reset</button>
                     </div>
                 </div>
             </section>
@@ -608,6 +608,48 @@
                 addBtn.click();
             }
         });
+
+        // Study Timer Logic
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let timerId = null;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            // Anti-Glitch Fix: clear any existing timer before starting a new one
+            if (timerId !== null) {
+                clearInterval(timerId);
+            }
+
+            timerId = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerId);
+                    timerId = null;
+                    alert('Time is up! Take a break.');
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+        }
+
+        startBtn.addEventListener('click', startTimer);
+        resetBtn.addEventListener('click', resetTimer);
     </script>
 </body>
 </html>
