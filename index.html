@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Idea Board</title>
+    <title>UCSC Student Toolkit</title>
     <style>
         :root {
-            --primary-blue: #e3f2fd;
-            --accent-blue: #2196f3;
-            --dark-blue: #1976d2;
-            --text-color: #333;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --ucsc-maroon: #7D2235;
+            --ucsc-gold: #FFB71B;
+            --ucsc-dark-maroon: #541421;
+            --bg-body: #f4f4f4;
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #eeeeee;
+            --idea-bg: #fffcf5;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --border-color: #333333;
+            --idea-bg: #2d2a22;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -21,40 +36,233 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--primary-blue);
-            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            opacity: 0;
+            animation: fadeInPage 1s ease-in-out forwards;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        @keyframes fadeInPage {
+            to { opacity: 1; }
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: var(--ucsc-maroon);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-        }
-
-        header {
-            background-color: var(--white);
-            width: 100%;
-            padding: 2rem 0;
-            text-align: center;
             box-shadow: var(--shadow);
-            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        header h1 {
-            color: var(--dark-blue);
-            font-size: 2.5rem;
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
         }
 
-        main {
+        /* Dark Mode Toggle */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 50px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--ucsc-gold);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .mode-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+            background-color: var(--ucsc-gold);
+            padding: 2px;
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            color: var(--ucsc-gold);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: var(--ucsc-gold);
+            color: var(--ucsc-maroon);
+        }
+
+        /* Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
             flex: 1;
-            width: 90%;
-            max-width: 600px;
-            background: var(--white);
+            width: 100%;
+        }
+
+        /* Sidebar */
+        aside {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            animation: fadeInSection 1s ease-out 0.2s both;
+        }
+
+        aside h2 {
+            color: var(--ucsc-maroon);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ucsc-gold);
+            padding-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        body.dark-mode aside h2 {
+            color: var(--ucsc-gold);
+        }
+
+        .event-list {
+            list-style: none;
+        }
+
+        .event-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .event-item:hover {
+            transform: scale(1.05);
+            background-color: var(--bg-body);
+            box-shadow: 0 0 15px var(--ucsc-gold);
+            z-index: 1;
+        }
+
+        body.dark-mode .event-item:hover {
+            box-shadow: 0 0 15px rgba(255, 183, 27, 0.4);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--ucsc-maroon);
+            font-weight: bold;
+        }
+
+        body.dark-mode .event-date {
+            color: var(--ucsc-gold);
+        }
+
+        /* Main Content */
+        main {
+            background: var(--bg-card);
             padding: 2rem;
             border-radius: 12px;
             box-shadow: var(--shadow);
-            margin-bottom: 2rem;
+            animation: fadeInSection 1s ease-out 0.4s both;
         }
 
+        .tab-content {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Idea Board Styles (Preserved & Updated) */
         .input-group {
             display: flex;
             flex-direction: column;
@@ -62,9 +270,11 @@
             margin-bottom: 1.5rem;
         }
 
-        select, input[type="text"] {
+        select, input[type="text"], input[type="number"] {
             padding: 0.8rem;
-            border: 1px solid #ddd;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             border-radius: 8px;
             font-size: 1rem;
             outline: none;
@@ -72,7 +282,11 @@
         }
 
         select:focus, input[type="text"]:focus {
-            border-color: var(--accent-blue);
+            border-color: var(--ucsc-maroon);
+        }
+
+        body.dark-mode select:focus, body.dark-mode input[type="text"]:focus {
+            border-color: var(--ucsc-gold);
         }
 
         .button-group {
@@ -87,37 +301,44 @@
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
-        #add-btn {
-            background-color: var(--accent-blue);
+        .btn-primary {
+            background-color: var(--ucsc-maroon);
             color: white;
             flex: 2;
         }
 
-        #add-btn:hover {
-            background-color: var(--dark-blue);
+        .btn-primary:hover {
+            background-color: var(--ucsc-dark-maroon);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+            box-shadow: 0 4px 8px rgba(125, 34, 53, 0.3);
         }
 
-        #clear-btn {
-            background-color: #f5f5f5;
-            color: #666;
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-muted);
             flex: 1;
         }
 
-        #clear-btn:hover {
-            background-color: #eee;
-            color: #333;
+        .btn-secondary:hover {
+            background-color: #ddd;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #444;
         }
 
         .stats {
             margin: 1.5rem 0;
             font-weight: bold;
-            color: var(--dark-blue);
+            color: var(--ucsc-maroon);
             text-align: center;
+        }
+
+        body.dark-mode .stats {
+            color: var(--ucsc-gold);
         }
 
         #idea-list {
@@ -126,72 +347,210 @@
         }
 
         .idea-item {
-            background: #f9fbfd;
+            background: var(--idea-bg);
             padding: 1rem;
-            border-left: 4px solid var(--accent-blue);
+            border-left: 4px solid var(--ucsc-gold);
             margin-bottom: 0.8rem;
             border-radius: 4px;
-            animation: fadeIn 0.4s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Tool Placeholders */
+        .tool-placeholder {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--ucsc-maroon);
+            margin: 1rem 0;
+        }
+
+        body.dark-mode .timer-display {
+            color: var(--ucsc-gold);
         }
 
         footer {
-            width: 100%;
-            padding: 1.5rem;
             text-align: center;
-            background-color: var(--white);
-            color: #777;
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
+            padding: 1.5rem;
+            background: var(--ucsc-maroon);
+            color: white;
+            margin-top: 2rem;
         }
 
         .empty-msg {
             text-align: center;
-            color: #aaa;
+            color: var(--text-muted);
             font-style: italic;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            nav {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .nav-right {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Group Idea Board</h1>
-    </header>
-
-    <main>
-        <div class="input-group">
-            <select id="name-select">
-                <option value="" disabled selected>Select your name</option>
-                <option value="Nimal">Nimal</option>
-                <option value="Sara">Sara</option>
-                <option value="Alex">Alex</option>
-            </select>
-            <input type="text" id="idea-input" placeholder="Enter your brilliant idea..." maxlength="100">
+    <nav>
+        <div class="logo-container">
+            <div class="logo-placeholder">UCSC<br>LOGO</div>
+            <h1>Student Toolkit</h1>
         </div>
-
-        <div class="button-group">
-            <button id="add-btn">Add Idea</button>
-            <button id="clear-btn">Clear All</button>
+        <div class="nav-right">
+            <ul>
+                <li><a href="#" class="nav-link" data-target="gpa-calc">GPA Calculator</a></li>
+                <li><a href="#" class="nav-link" data-target="study-timer">Study Timer</a></li>
+                <li><a href="#" class="nav-link active" data-target="idea-board">Idea Board</a></li>
+            </ul>
+            <div class="theme-switch-wrapper">
+                <span class="mode-label">Light</span>
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider"></div>
+                </label>
+                <span class="mode-label">Dark</span>
+            </div>
         </div>
+    </nav>
 
-        <div class="stats">
-            Total Ideas: <span id="counter">0</span>
-        </div>
+    <div class="container">
+        <aside>
+            <h2>Upcoming Events</h2>
+            <ul class="event-list">
+                <li class="event-item">
+                    <span class="event-date">March 15</span>
+                    Career Fair - Engineering Building
+                </li>
+                <li class="event-item">
+                    <span class="event-date">March 22</span>
+                    Hackathon Registration Ends
+                </li>
+                <li class="event-item">
+                    <span class="event-date">April 05</span>
+                    Spring Semester Break Starts
+                </li>
+            </ul>
+        </aside>
 
-        <ul id="idea-list">
-            <li class="empty-msg">No ideas yet. Be the first to suggest one!</li>
-        </ul>
-    </main>
+        <main>
+            <!-- Idea Board Section (Original Functionality) -->
+            <section id="idea-board" class="tab-content active">
+                <h2 style="color: var(--ucsc-maroon); margin-bottom: 1rem;" id="board-title">Project Idea Board</h2>
+                <div class="input-group">
+                    <select id="name-select">
+                        <option value="" disabled selected>Select your name</option>
+                        <option value="Nimal">Nimal</option>
+                        <option value="Sara">Sara</option>
+                        <option value="Alex">Alex</option>
+                    </select>
+                    <input type="text" id="idea-input" placeholder="Enter your brilliant idea..." maxlength="100">
+                </div>
+
+                <div class="button-group">
+                    <button id="add-btn" class="btn-primary">Add Idea</button>
+                    <button id="clear-btn" class="btn-secondary">Clear All</button>
+                </div>
+
+                <div class="stats">
+                    Total Ideas: <span id="counter">0</span>
+                </div>
+
+                <ul id="idea-list">
+                    <li class="empty-msg">No ideas yet. Be the first to suggest one!</li>
+                </ul>
+            </section>
+
+            <!-- GPA Calculator Section -->
+            <section id="gpa-calc" class="tab-content">
+                <h2 style="color: var(--ucsc-maroon); margin-bottom: 1rem;">GPA Calculator</h2>
+                <div class="tool-placeholder">
+                    <p>Track your academic progress easily.</p>
+                    <div class="input-group" style="margin-top: 1rem;">
+                        <input type="text" placeholder="Course Name">
+                        <select>
+                            <option>A (4.0)</option>
+                            <option>B (3.0)</option>
+                            <option>C (2.0)</option>
+                            <option>D (1.0)</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary">Add Course</button>
+                    <div class="stats">Current GPA: 0.00</div>
+                </div>
+            </section>
+
+            <!-- Study Timer Section -->
+            <section id="study-timer" class="tab-content">
+                <h2 style="color: var(--ucsc-maroon); margin-bottom: 1rem;">Study Timer</h2>
+                <div class="tool-placeholder">
+                    <p>Focus with Pomodoro technique.</p>
+                    <div class="timer-display">25:00</div>
+                    <div class="button-group">
+                        <button class="btn-primary">Start</button>
+                        <button class="btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <footer>
-        &copy; 2026 Group Idea Board. All rights reserved.
+        &copy; 2026 UCSC Student Toolkit. All rights reserved.
     </footer>
 
     <script>
+        // Dark Mode Logic
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('board-title').style.color = 'var(--ucsc-gold)';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('board-title').style.color = 'var(--ucsc-maroon)';
+            }    
+        }
+
+        toggleSwitch.addEventListener('change', switchTheme, false);
+
+        // Navigation Logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.tab-content');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.getAttribute('data-target');
+
+                // Update active link
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                // Update active section
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === target) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Idea Board Logic (Preserved)
         const nameSelect = document.getElementById('name-select');
         const ideaInput = document.getElementById('idea-input');
         const addBtn = document.getElementById('add-btn');
@@ -218,24 +577,18 @@
                 return;
             }
 
-            // Remove empty message if it exists
             if (totalIdeas === 0) {
                 ideaList.innerHTML = '';
             }
 
-            // Create idea item
             const li = document.createElement('li');
             li.className = 'idea-item';
             li.innerHTML = `<strong>${idea}</strong> - suggested by <em>${name}</em>`;
             
-            // Add to list
             ideaList.prepend(li);
-
-            // Update state
             totalIdeas++;
             updateCounter();
 
-            // Reset input
             ideaInput.value = '';
             ideaInput.focus();
         });
@@ -250,7 +603,6 @@
             }
         });
 
-        // Allow Enter key to submit
         ideaInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 addBtn.click();
