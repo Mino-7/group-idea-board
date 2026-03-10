@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Idea Board</title>
+    <style>
+        :root {
+            --primary-blue: #e3f2fd;
+            --accent-blue: #2196f3;
+            --dark-blue: #1976d2;
+            --text-color: #333;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-blue);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+        }
+
+        header {
+            background-color: var(--white);
+            width: 100%;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            color: var(--dark-blue);
+            font-size: 2.5rem;
+        }
+
+        main {
+            flex: 1;
+            width: 90%;
+            max-width: 600px;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        select, input[type="text"] {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        #add-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            flex: 2;
+        }
+
+        #add-btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+        }
+
+        #clear-btn {
+            background-color: #f5f5f5;
+            color: #666;
+            flex: 1;
+        }
+
+        #clear-btn:hover {
+            background-color: #eee;
+            color: #333;
+        }
+
+        .stats {
+            margin: 1.5rem 0;
+            font-weight: bold;
+            color: var(--dark-blue);
+            text-align: center;
+        }
+
+        #idea-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .idea-item {
+            background: #f9fbfd;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-blue);
+            margin-bottom: 0.8rem;
+            border-radius: 4px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            width: 100%;
+            padding: 1.5rem;
+            text-align: center;
+            background-color: var(--white);
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #aaa;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Group Idea Board</h1>
+    </header>
+
+    <main>
+        <div class="input-group">
+            <select id="name-select">
+                <option value="" disabled selected>Select your name</option>
+                <option value="Nimal">Nimal</option>
+                <option value="Sara">Sara</option>
+                <option value="Alex">Alex</option>
+            </select>
+            <input type="text" id="idea-input" placeholder="Enter your brilliant idea..." maxlength="100">
+        </div>
+
+        <div class="button-group">
+            <button id="add-btn">Add Idea</button>
+            <button id="clear-btn">Clear All</button>
+        </div>
+
+        <div class="stats">
+            Total Ideas: <span id="counter">0</span>
+        </div>
+
+        <ul id="idea-list">
+            <li class="empty-msg">No ideas yet. Be the first to suggest one!</li>
+        </ul>
+    </main>
+
+    <footer>
+        &copy; 2026 Group Idea Board. All rights reserved.
+    </footer>
+
+    <script>
+        const nameSelect = document.getElementById('name-select');
+        const ideaInput = document.getElementById('idea-input');
+        const addBtn = document.getElementById('add-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const ideaList = document.getElementById('idea-list');
+        const counter = document.getElementById('counter');
+
+        let totalIdeas = 0;
+
+        function updateCounter() {
+            counter.textContent = totalIdeas;
+        }
+
+        addBtn.addEventListener('click', () => {
+            const name = nameSelect.value;
+            const idea = ideaInput.value.trim();
+
+            if (!name) {
+                alert('Please select a name!');
+                return;
+            }
+            if (!idea) {
+                alert('Please enter an idea!');
+                return;
+            }
+
+            // Remove empty message if it exists
+            if (totalIdeas === 0) {
+                ideaList.innerHTML = '';
+            }
+
+            // Create idea item
+            const li = document.createElement('li');
+            li.className = 'idea-item';
+            li.innerHTML = `<strong>${idea}</strong> - suggested by <em>${name}</em>`;
+            
+            // Add to list
+            ideaList.prepend(li);
+
+            // Update state
+            totalIdeas++;
+            updateCounter();
+
+            // Reset input
+            ideaInput.value = '';
+            ideaInput.focus();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (totalIdeas === 0) return;
+            
+            if (confirm('Are you sure you want to clear all ideas?')) {
+                ideaList.innerHTML = '<li class="empty-msg">No ideas yet. Be the first to suggest one!</li>';
+                totalIdeas = 0;
+                updateCounter();
+            }
+        });
+
+        // Allow Enter key to submit
+        ideaInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
