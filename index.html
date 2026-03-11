@@ -500,6 +500,7 @@
                     <div class="timer-display" id="timer-display">25:00</div>
                     <div class="button-group">
                         <button class="btn-primary" id="start-btn">Start</button>
+                        <button class="btn-secondary" id="pause-btn" disabled>Pause</button>
                         <button class="btn-secondary" id="reset-btn">Reset</button>
                     </div>
                 </div>
@@ -612,6 +613,7 @@
         // Study Timer Logic
         const timerDisplay = document.getElementById('timer-display');
         const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
         const resetBtn = document.getElementById('reset-btn');
 
         let timeLeft = 25 * 60; // 25 minutes in seconds
@@ -624,31 +626,52 @@
         }
 
         function startTimer() {
-            // Anti-Glitch Fix: clear any existing timer before starting a new one
-            if (timerId !== null) {
-                clearInterval(timerId);
-            }
+            if (timerId !== null) return;
+
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            pauseBtn.textContent = 'Pause';
 
             timerId = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
                     updateTimerDisplay();
                 } else {
-                    clearInterval(timerId);
-                    timerId = null;
+                    stopTimer();
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
                     alert('Time is up! Take a break.');
                 }
             }, 1000);
         }
 
-        function resetTimer() {
+        function stopTimer() {
             clearInterval(timerId);
             timerId = null;
+        }
+
+        function togglePause() {
+            if (timerId !== null) {
+                // Timer is running, so pause it
+                stopTimer();
+                pauseBtn.textContent = 'Resume';
+            } else {
+                // Timer is paused, so resume it
+                startTimer();
+            }
+        }
+
+        function resetTimer() {
+            stopTimer();
             timeLeft = 25 * 60;
             updateTimerDisplay();
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            pauseBtn.textContent = 'Pause';
         }
 
         startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', togglePause);
         resetBtn.addEventListener('click', resetTimer);
     </script>
 </body>
